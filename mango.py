@@ -1,11 +1,13 @@
 from command import MangoCommand
 from server.pull import pull
+from server.push import push
 from client.tests import run_test
 import sys
 
 commands = {
     MangoCommand("pull", [], pull),
-    MangoCommand("test", ["name"], run_test)
+    MangoCommand("test", ["name"], run_test),
+    MangoCommand("push", [], push),
 }
 
 for command in commands:
