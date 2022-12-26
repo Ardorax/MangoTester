@@ -20,19 +20,28 @@ def delete_user_tests(category: str):
 
 
 def push():
-    # Pull
+    # For all the category on the mango folder
     for category in os.listdir(mango_local):
-        # Ignore files
         category_folder = os.path.join(mango_local, category)
+        # Ignore files
         if not os.path.isdir(category_folder):
             continue
+        
         print("On category:", category)
+
+        # If category don't exist on remote:
         if not os.path.exists(os.path.join(mango_db, category)):
+            # Create it.
             os.mkdir(os.path.join(mango_db, category))
         else:
+            # Delete all old tests.
             delete_user_tests(category)
-        # Delete my test
+        
+        # Put all the new tests on the remote
         for test in os.listdir(category_folder):
             test_folder = os.path.join(category_folder, test)
             print("-", test)
             os.system(f"cp -r {test_folder} {os.path.join(mango_db, category, test)}")
+    
+    # Update remote db
+    os.system(f"cd {mango_db} && git pull && git push")
