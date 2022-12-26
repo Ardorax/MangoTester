@@ -1,5 +1,5 @@
 from command import MangoCommand
-from server.example import pull
+from server.pull import pull
 from client.tests import run_test
 import sys
 
