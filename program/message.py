@@ -1,0 +1,7 @@
+NOT_FOUND_SYS = "Mango not found on your system, make sure you have installed it."
+NOT_FOUND_LOCAL = "Mango not found in your current directory, use \"mango init\"."
+NO_TESTS_FOUND = "No tests found for category {category}."
+INVALID_TEST = "Test {name} is invalid."
+UNABLE_TO_RUN = "Unable to run test..."
+ALREADY_EXISTS = "Mango directory already exists."
+TEST_ALREADY_EXISTS = "Test {name} already exists."

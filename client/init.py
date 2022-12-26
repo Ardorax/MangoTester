@@ -1,4 +1,6 @@
 import os
+from program.print import print_error
+from program.message import ALREADY_EXISTS, NOT_FOUND_LOCAL, TEST_ALREADY_EXISTS
 
 TEST_CONTENT = """{
     "preliminaries": [
@@ -20,19 +22,19 @@ TEST_CONTENT = """{
 
 def init_tests():
     if os.path.exists("mango"):
-        print("Mango directory already exists")
+        print_error(ALREADY_EXISTS)
         return
     os.mkdir("mango")
 
 def add_test(category, name):
     user_name = os.getlogin()
     if not os.path.exists("mango"):
-        print("Mango directory does not exist")
+        print_error(NOT_FOUND_LOCAL)
         return
     if not os.path.exists(f"mango/{category}"):
         os.mkdir(f"mango/{category}")
-    if os.path.exists(f"mango/{category}/{name}"):
-        print(f"Test {name} already exists")
+    if os.path.exists(f"mango/{category}/{user_name}_{name}"):
+        print_error(TEST_ALREADY_EXISTS.format(name=name))
         return
     os.mkdir(f"mango/{category}/{user_name}_{name}")
     os.mkdir(f"mango/{category}/{user_name}_{name}/files")

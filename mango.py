@@ -1,17 +1,18 @@
 #!/usr/bin/python3
 
-from command import MangoCommand
+from program.command import MangoCommand
 from server.pull import pull
 from server.push import push
-from client.tests import run_test
+from client.tests import run_test, local_test
 from client.init import init_tests, add_test
 import sys
 
 commands = {
-    MangoCommand("pull", [], pull),
+    MangoCommand("pull", ["category"], pull),
     MangoCommand("init", [], init_tests),
     MangoCommand("add", ["category", "name"], add_test),
-    MangoCommand("test", ["category"], run_test)
+    MangoCommand("test", ["category"], run_test),
+    MangoCommand("local", ["category"], local_test),
 }
 
 if len(sys.argv) < 2:
