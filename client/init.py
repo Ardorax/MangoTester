@@ -6,6 +6,7 @@ TEST_CONTENT = """{
     ],
     "tests": [
         {
+            "name": "Test 1",
             "command": "./test 1 2 3",
             "assert": {
                 "stdout": "6\\n",
@@ -24,6 +25,7 @@ def init_tests():
     os.mkdir("mango")
 
 def add_test(category, name):
+    user_name = os.getlogin()
     if not os.path.exists("mango"):
         print("Mango directory does not exist")
         return
@@ -32,7 +34,7 @@ def add_test(category, name):
     if os.path.exists(f"mango/{category}/{name}"):
         print(f"Test {name} already exists")
         return
-    os.mkdir(f"mango/{category}/{name}")
-    os.mkdir(f"mango/{category}/{name}/files")
-    with open(f"mango/{category}/{name}/test.json", "w+") as f:
+    os.mkdir(f"mango/{category}/{user_name}_{name}")
+    os.mkdir(f"mango/{category}/{user_name}_{name}/files")
+    with open(f"mango/{category}/{user_name}_{name}/test.json", "w+") as f:
         f.write(TEST_CONTENT)
