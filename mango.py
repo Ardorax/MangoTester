@@ -13,6 +13,7 @@ commands = {
     MangoCommand("add", ["category", "name"], add_test),
     MangoCommand("test", ["category"], run_test),
     MangoCommand("local", ["category"], local_test),
+    MangoCommand("push", [], push),
 }
 
 if len(sys.argv) < 2:

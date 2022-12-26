@@ -1,25 +1,38 @@
 import os
 import sys
 
-# TODO
-def send_test():
-    pass
+mango_db = os.path.expanduser("~/.mango/mangodb")
+mango_local = "./mango"
+
+
+def remove_folder(path: str):
+    if ".." in path:
+        return 1
+    # print("delete", path)
+    os.system(f"rm -rf {path}")
+
+
+def delete_user_tests(category: str):
+    name = os.getlogin() + "_"
+    for test in os.listdir(os.path.join(mango_db, category)):
+        if test.startswith(name):
+            remove_folder(os.path.join(mango_db, category, test))
+
 
 def push():
-    mangoFolder = "./mango"
-    mangoDb = "~/.mango/mangodb"
-    print("push new tests")
-    if not os.path.exists(mangoFolder):
-        print("mango folder not found.", file=sys.stderr)
-        return 1
-    for category in os.listdir(mangoFolder):
+    # Pull
+    for category in os.listdir(mango_local):
         # Ignore files
-        categoryFolder = os.path.join(mangoFolder, category)
-        if not os.path.isdir(categoryFolder):
+        category_folder = os.path.join(mango_local, category)
+        if not os.path.isdir(category_folder):
             continue
-        print(category)
-        for test in os.listdir(categoryFolder):
-            testFolder = os.path.join(categoryFolder, test)
-            if not os.path.isdir(testFolder):
-                continue
-            send_test()
+        print("On category:", category)
+        if not os.path.exists(os.path.join(mango_db, category)):
+            os.mkdir(os.path.join(mango_db, category))
+        else:
+            delete_user_tests(category)
+        # Delete my test
+        for test in os.listdir(category_folder):
+            test_folder = os.path.join(category_folder, test)
+            print("-", test)
+            os.system(f"cp -r {test_folder} {os.path.join(mango_db, category, test)}")
