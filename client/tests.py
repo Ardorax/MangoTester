@@ -52,9 +52,10 @@ def unprintable(string):
     return string.replace("\n", "\\n").replace("\t", "\\t").replace("\r", "\\r")
 
 
-def assertion_error(test, type, expected, got):
+def assertion_error(test, type, command, expected, got):
     test_info(test, False)
     print(f"\033[90m", end="")
+    print(f"> {command}")
     print(f"{type}: Assertion failed")
     print(f"Expected \"{unprintable(expected)}\", got \"{unprintable(got)}\"")
     print("\033[0m", end="")
@@ -69,13 +70,13 @@ def run_it(test, file, name):
     stdout, stderr = process.communicate()
     returncode = process.returncode
     if test["assert"]["stdout"] != stdout.decode("utf-8"):
-        assertion_error(name, "stdout", test["assert"]["stdout"], stdout.decode("utf-8"))
+        assertion_error(name, "stdout", test["command"], test["assert"]["stdout"], stdout.decode("utf-8"))
         return
     if test["assert"]["stderr"] != stderr.decode("utf-8"):
-        assertion_error(name, "sterr", test["assert"]["sterr"], stderr.decode("utf-8"))
+        assertion_error(name, "sterr", test["command"], test["assert"]["sterr"], stderr.decode("utf-8"))
         return
     if test["assert"]["status"] != returncode:
-        assertion_error(name, "status", test["assert"]["status"], returncode)
+        assertion_error(name, "status", test["command"], test["assert"]["status"], returncode)
         return
     test_info(name, True)
 
