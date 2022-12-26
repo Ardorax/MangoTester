@@ -2,5 +2,8 @@ import os
 
 def pull():
     print("Commande de pull")
-    # TODO verify the pull append correctly
-    print(os.system("cd ~/.mango/mangodb && git pull"))
+    status = os.system("cd ~/.mango/mangodb && git pull && exit 22")
+    if status // 256 == 22:
+        print("Pull executed sucessfully !")
+    else:
+        print("Some error happend during pull...")
