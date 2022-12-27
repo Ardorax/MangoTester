@@ -3,7 +3,7 @@ import os
 import subprocess
 import json
 from program.print import print_error
-from program.message import NOT_FOUND_SYS, NOT_FOUND_LOCAL, NO_TESTS_FOUND, INVALID_TEST, UNABLE_TO_RUN
+from program.message import NOT_FOUND_LOCAL, NO_TESTS_FOUND, INVALID_TEST, UNABLE_TO_RUN
 
 
 def load_tests(category, local):

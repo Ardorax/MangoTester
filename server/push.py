@@ -1,5 +1,7 @@
 import os
 import sys
+from program.print import print_error
+from program.message import NOT_FOUND_LOCAL, NOT_FOUND_SYS
 
 mango_db = os.path.expanduser("~/.mango/mangodb")
 mango_local = "./mango"
@@ -21,6 +23,12 @@ def delete_user_tests(category: str):
 
 def push():
     # For all the category on the mango folder
+    if (not os.path.exists(mango_local)):
+        print_error(NOT_FOUND_LOCAL)
+        return
+    if (not os.path.exists(mango_db)):
+        print_error(NOT_FOUND_SYS)
+        return
     for category in os.listdir(mango_local):
         category_folder = os.path.join(mango_local, category)
         # Ignore files
@@ -44,4 +52,10 @@ def push():
             os.system(f"cp -r {test_folder} {os.path.join(mango_db, category, test)}")
     
     # Update remote db
-    os.system(f"cd {mango_db} && git pull && git push")
+    status = os.system(f"cd {mango_db} && git pull && git add --all && git commit -m \"autocommit\" && git push")
+    if status != 0:
+        print_error("Some error happend during push...")
+        return
+    print("\033[92m", end="")
+    print("\u2713", end=" ")
+    print("Pushed successfully!")
