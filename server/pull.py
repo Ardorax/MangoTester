@@ -1,11 +1,10 @@
 import os
 from program.print import print_error
-from program.message import NOT_FOUND_LOCAL
+from program.check import has_mango_db, has_mango_folder
 
 
 def pull(category):
-    if not os.path.exists("mango"):
-        print_error(NOT_FOUND_LOCAL)
+    if not has_mango_folder() or not has_mango_db():
         return
     home_dir = os.path.expanduser("~")
     status = os.system(f"cd {home_dir}/.mango/mangodb && git pull > /dev/null 2>&1")
