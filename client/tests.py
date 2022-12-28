@@ -37,7 +37,7 @@ def prepare_test(file, config):
             f"cp -r {temp_dir}/mango/tests/{file}/files/* {temp_dir}/mango/tester")
     os.system(f"cp -r * {temp_dir}/mango/tester")
     os.chdir(f"{temp_dir}/mango/tester")
-    if config["preliminaries"]:
+    if "preliminaries" in config:
         for command in config["preliminaries"]:
             process = subprocess.call(
                 command.split(), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -59,11 +59,8 @@ def unprintable(string):
 
 def assertion_error(test, type, command, expected, got):
     test_info(test, False)
-    print(f"\033[90m", end="")
-    print(f"> {command}")
-    print(f"{type}: Assertion failed")
-    print(f"Expected \"{unprintable(expected)}\", got \"{unprintable(got)}\"")
-    print("\033[0m", end="")
+    print(f"\033[90m> {command}\n{type}: Assertion failed")
+    print(f"Expected \"{unprintable(expected)}\", got \"{unprintable(got)}\"\033[0m")
 
 
 def run_it(test, file, name):
@@ -75,15 +72,15 @@ def run_it(test, file, name):
     process.wait()
     stdout, stderr = process.communicate()
     returncode = process.returncode
-    if test["assert"]["stdout"] != stdout.decode("utf-8"):
+    if "stdout" in test["assert"] and test["assert"]["stdout"] != stdout.decode("utf-8"):
         assertion_error(
             name, "stdout", test["command"], test["assert"]["stdout"], stdout.decode("utf-8"))
         return
-    if test["assert"]["stderr"] != stderr.decode("utf-8"):
+    if "stderr" in test["assert"] and test["assert"]["stderr"] != stderr.decode("utf-8"):
         assertion_error(
             name, "sterr", test["command"], test["assert"]["sterr"], stderr.decode("utf-8"))
         return
-    if test["assert"]["status"] != returncode:
+    if "status" in test["assert"] and test["assert"]["status"] != returncode:
         assertion_error(
             name, "status", test["command"], test["assert"]["status"], returncode)
         return
@@ -114,9 +111,7 @@ def runner(category, local=False):
                 run_it(test, file, test_name)
             except Exception as e:
                 test_info(test_name, False)
-                print(f"\033[90m", end = "")
-                print(UNABLE_TO_RUN)
-                print("\033[0m", end = "")
+                print(f"\033[90m{UNABLE_TO_RUN}\033[0m")
         os.chdir(working_dir)
 
 
