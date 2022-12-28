@@ -20,6 +20,7 @@ def delete_user_tests(category: str):
 
 
 def push():
+    name = os.getlogin() + "_"
     # For all the category on the mango folder
     if not has_mango_folder() or not has_mango_db():
         return
@@ -41,6 +42,8 @@ def push():
 
         # Put all the new tests on the remote
         for test in os.listdir(category_folder):
+            if not test.startswith(name):
+                continue
             test_folder = os.path.join(category_folder, test)
             print("-", test)
             os.system(f"cp -r {test_folder} {os.path.join(MANGO_DB, category, test)}")
