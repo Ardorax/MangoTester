@@ -1,5 +1,5 @@
 import os
-from program.print import print_error
+from program.print import print_error, print_successful
 from program.check import has_mango_db, has_mango_folder
 
 MANGO_DB = os.path.expanduser("~/.mango/mangodb")
@@ -55,6 +55,4 @@ def push():
     if status != 0:
         print_error("Some error happend during push...")
         return
-    print("\033[92m", end="")
-    print("\u2713", end=" ")
-    print("Pushed successfully!")
+    print_successful("Pushed successfully!")
