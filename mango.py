@@ -5,6 +5,7 @@ from server.pull import pull
 from server.push import push
 from client.tests import run_test, local_test
 from client.init import init_tests, add_test
+from client.inspect import inspect
 import sys
 
 
@@ -15,6 +16,7 @@ commands = {
     MangoCommand("test", ["category"], run_test),
     MangoCommand("local", ["category"], local_test),
     MangoCommand("push", [], push),
+    MangoCommand("inspect", ["category"], inspect),
 }
 
 if len(sys.argv) < 2:
