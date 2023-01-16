@@ -2,6 +2,7 @@ import tempfile
 import os
 import subprocess
 import json
+import glob
 from program.print import print_error
 from program.message import NOT_FOUND_LOCAL, NO_TESTS_FOUND, INVALID_TEST, UNABLE_TO_RUN
 
@@ -28,6 +29,18 @@ def get_test_config(test):
         return json.loads(f.read())
 
 
+def prepare_command(command):
+    res = []
+    comm = command.split()
+    for arg in comm:
+        if arg.startswith("*."):
+            for file in glob.glob(arg):
+                res.append(file)
+        else:
+            res.append(arg)
+    return res
+
+
 def prepare_test(file, config):
     temp_dir = tempfile.gettempdir()
     os.system(f"rm -rf {temp_dir}/mango/tester")
@@ -40,7 +53,8 @@ def prepare_test(file, config):
     if "preliminaries" in config:
         for command in config["preliminaries"]:
             process = subprocess.call(
-                command.split(), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                prepare_command(command)
+                , stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             if process != 0:
                 print(f"\033[91mError while running \"{command}\"\033[0m")
                 return False
@@ -60,15 +74,16 @@ def unprintable(string):
 def assertion_error(test, type, command, expected, got):
     test_info(test, False)
     print(f"\033[90m> {command}\n{type}: Assertion failed")
-    print(f"Expected \"{unprintable(expected)}\", got \"{unprintable(got)}\"\033[0m")
+    print(
+        f"Expected \"{unprintable(expected)}\", got \"{unprintable(got)}\"\033[0m")
 
 
 def run_it(test, file, name):
     if not test["assert"] or not test["command"]:
         print(f"Test {file} is not valid")
         return
-    process = subprocess.Popen(test["command"].split(
-    ), stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    process = subprocess.Popen(prepare_command(
+        test["command"]), stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     process.wait()
     stdout, stderr = process.communicate()
     returncode = process.returncode
@@ -101,12 +116,12 @@ def runner(category, local=False):
         if not os.path.exists(f"{temp_dir}/mango/tests/{file}/test.json"):
             print_error(INVALID_TEST.format(name=file))
             continue
-        working_dir=os.getcwd()
-        config=get_test_config(file)
+        working_dir = os.getcwd()
+        config = get_test_config(file)
         prepare_test(file, config)
 
         for i, test in enumerate(config["tests"]):
-            test_name=test["name"] if "name" in test else f"{file}-{i}"
+            test_name = test["name"] if "name" in test else f"{file}-{i}"
             try:
                 run_it(test, file, test_name)
             except Exception as e:
@@ -117,6 +132,7 @@ def runner(category, local=False):
 
 def local_test(category):
     runner(category, True)
+
 
 def run_test(category):
     runner(category)
