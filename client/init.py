@@ -20,13 +20,13 @@ TEST_CONTENT = """{
 }
 """
 
-def init_tests():
+def init_tests(flags):
     if os.path.exists("mango"):
         print_error(ALREADY_EXISTS)
         return
     os.mkdir("mango")
 
-def add_test(category, name):
+def add_test(category, name, flags):
     user_name = os.getlogin()
     if not os.path.exists("mango"):
         print_error(NOT_FOUND_LOCAL)

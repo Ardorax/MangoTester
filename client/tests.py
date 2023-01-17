@@ -41,7 +41,7 @@ def prepare_command(command):
     return res
 
 
-def prepare_test(file, config):
+def prepare_test(file, config, flags):
     temp_dir = tempfile.gettempdir()
     os.system(f"rm -rf {temp_dir}/mango/tester")
     os.mkdir(f"{temp_dir}/mango/tester")
@@ -52,9 +52,12 @@ def prepare_test(file, config):
     os.chdir(f"{temp_dir}/mango/tester")
     if "preliminaries" in config:
         for command in config["preliminaries"]:
-            process = subprocess.call(
-                prepare_command(command)
-                , stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            if flags["verbose"]:
+                process = subprocess.call(
+                    prepare_command(command))
+            else:
+                process = subprocess.call(
+                    prepare_command(command), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             if process != 0:
                 print(f"\033[91mError while running \"{command}\"\033[0m")
                 return False
@@ -102,7 +105,7 @@ def run_it(test, file, name):
     test_info(name, True)
 
 
-def runner(category, local=False):
+def runner(category, local, flags):
     temp_dir = tempfile.gettempdir()
     os.system(f"rm -rf {temp_dir}/mango")
     os.mkdir(f"{temp_dir}/mango")
@@ -118,21 +121,23 @@ def runner(category, local=False):
             continue
         working_dir = os.getcwd()
         config = get_test_config(file)
-        prepare_test(file, config)
-
+        prepare_test(file, config, flags)
         for i, test in enumerate(config["tests"]):
             test_name = test["name"] if "name" in test else f"{file}-{i}"
             try:
                 run_it(test, file, test_name)
             except Exception as e:
                 test_info(test_name, False)
-                print(f"\033[90m{UNABLE_TO_RUN}\033[0m")
+                print(f"\033[90m{UNABLE_TO_RUN}", end="")
+                if flags["verbose"]:
+                    print(f"\n\033[90;1m{type(e).__name__}: {e}", end="")
+                print("\033[0m")
         os.chdir(working_dir)
 
 
-def local_test(category):
-    runner(category, True)
+def local_test(category, flags):
+    runner(category, True, flags)
 
 
-def run_test(category):
-    runner(category)
+def run_test(category, flags):
+    runner(category, False, flags)
