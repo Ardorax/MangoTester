@@ -61,6 +61,7 @@ def prepare_test(file, config, flags):
             if process != 0:
                 print(f"\033[91mError while running \"{command}\"\033[0m")
                 return False
+    return True
 
 
 def test_info(name, succes):
@@ -121,7 +122,8 @@ def runner(category, local, flags):
             continue
         working_dir = os.getcwd()
         config = get_test_config(file)
-        prepare_test(file, config, flags)
+        if not prepare_test(file, config, flags) and "mandatory_preliminaries" in config:
+            return False
         for i, test in enumerate(config["tests"]):
             test_name = test["name"] if "name" in test else f"{file}-{i}"
             try:
