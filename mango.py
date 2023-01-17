@@ -9,6 +9,10 @@ from client.inspect import inspect
 import sys
 
 
+flags = {
+    "verbose": False
+}
+
 commands = {
     MangoCommand("pull", ["category"], pull),
     MangoCommand("init", [], init_tests),
@@ -19,7 +23,14 @@ commands = {
     MangoCommand("inspect", ["category"], inspect),
 }
 
-if len(sys.argv) < 2:
+positional = list(filter(lambda command: not command.startswith("--"), sys.argv))
+optional = list(filter(lambda command: command.startswith("--"),  sys.argv))
+
+for flag in optional:
+    if flag[2:] in flags:
+        flags[flag[2:]] = True
+
+if len(positional) < 2:
     print("Usage: mango <command> [args]")
     print("Available commands:")
     for command in commands:
@@ -27,9 +38,9 @@ if len(sys.argv) < 2:
     exit(1)
 
 for command in commands:
-    if command.name == sys.argv[1]:
-        if len(sys.argv) - 2 == len(command.args):
-            command.action(*sys.argv[2:])
+    if command.name == positional[1]:
+        if len(positional) - 2 == len(command.args):
+            command.action(*positional[2:], flags)
         else:
             print(
                 f'Usage: mango {command.name} {" ".join([f"<{arg}>" for arg in command.args])}'

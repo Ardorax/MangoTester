@@ -4,7 +4,7 @@ from program.print import print_error
 from program.message import NOT_FOUND_LOCAL, NO_TESTS_FOUND, INVALID_TEST, UNABLE_TO_RUN
 
 
-def inspect(category):
+def inspect(category, flags):
     files = os.listdir(f"mango/{category}")
     for fileName in files:
         if not os.path.exists(f"./mango/{category}/{fileName}/test.json"):
