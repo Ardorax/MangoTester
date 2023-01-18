@@ -121,6 +121,7 @@ def runner(category, local, flags):
             continue
         working_dir = os.getcwd()
         config = get_test_config(file)
+        print(f"\033[1m\u2022 {file}\033[0m")
         prepare_test(file, config, flags)
         for i, test in enumerate(config["tests"]):
             test_name = test["name"] if "name" in test else f"{file}-{i}"
