@@ -97,7 +97,7 @@ def run_it(test, file, name):
         return
     if "stderr" in test["assert"] and test["assert"]["stderr"] != stderr.decode("utf-8"):
         assertion_error(
-            name, "sterr", test["command"], test["assert"]["sterr"], stderr.decode("utf-8"))
+            name, "stderr", test["command"], test["assert"]["stderr"], stderr.decode("utf-8"))
         return
     if "status" in test["assert"] and test["assert"]["status"] != returncode:
         assertion_error(
