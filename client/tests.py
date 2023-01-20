@@ -1,5 +1,6 @@
 import tempfile
 import os
+import getpass
 import subprocess
 import json
 import glob
@@ -9,7 +10,7 @@ from program.message import NOT_FOUND_LOCAL, NO_TESTS_FOUND, INVALID_TEST, UNABL
 
 def load_tests(category, local):
     temp_dir = tempfile.gettempdir()
-    user_name = os.getlogin()
+    user_name = getpass.getuser()
 
     if not os.path.exists("mango"):
         print_error(NOT_FOUND_LOCAL)

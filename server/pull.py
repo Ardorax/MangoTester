@@ -1,4 +1,5 @@
 import os
+import getpass
 from program.print import print_error
 from program.check import has_mango_db, has_mango_folder
 
@@ -8,7 +9,7 @@ def pull(category, flags):
         return
     home_dir = os.path.expanduser("~")
     status = os.system(f"cd {home_dir}/.mango/mangodb && git pull > /dev/null 2>&1")
-    user_name = os.getlogin()
+    user_name = getpass.getuser()
     if status != 0:
         print_error("Some error happend during pull...")
         return

@@ -1,4 +1,5 @@
 import os
+import getpass
 from program.print import print_error, print_successful
 from program.check import has_mango_db, has_mango_folder
 
@@ -13,14 +14,14 @@ def remove_folder(path: str):
 
 
 def delete_user_tests(category: str):
-    name = os.getlogin() + "_"
+    name = getpass.getuser() + "_"
     for test in os.listdir(os.path.join(MANGO_DB, category)):
         if test.startswith(name):
             remove_folder(os.path.join(MANGO_DB, category, test))
 
 
 def push(flags):
-    name = os.getlogin() + "_"
+    name = getpass.getuser() + "_"
     # For all the category on the mango folder
     if not has_mango_folder() or not has_mango_db():
         return
