@@ -1,4 +1,5 @@
 import os
+import getpass
 from program.print import print_error
 from program.message import ALREADY_EXISTS, NOT_FOUND_LOCAL, TEST_ALREADY_EXISTS
 
@@ -27,7 +28,7 @@ def init_tests(flags):
     os.mkdir("mango")
 
 def add_test(category, name, flags):
-    user_name = os.getlogin()
+    user_name = getpass.getuser()
     if not os.path.exists("mango"):
         print_error(NOT_FOUND_LOCAL)
         return
